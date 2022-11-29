@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+<html>
+	<div class="container">
+		<div class="data">
+		<div class="score">PONTSZÁM : <span class="scoreBoard">0</span></div>
+		<div class="click">KATTINTÁS : <span class="clickBoard">0</span></div>
+		</div>
+		<div class="grid">
+		<div class="popup">
+		<button class="playAgain">újra</button>
+		</div>
+		</div>
+		</div>
+	
+<style>
+	#background{
+    width: 100vw;
+  height: 100vh;
+  object-fit: cover;
+  position: fixed;
+  left: 0;
+  right: 0;
+  top: 0;
+  bottom: 0;
+  z-index: -1;
+	}
+  body{
+		font-family: 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;
+	
+	}
+
+	.grid { 
+width: 90%; 
+height: 300px; 
+display: flex; 
+flex-wrap: wrap; 
+margin: 60px auto; 
+} 
+
+.grid img { 
+margin: 2px; 
+transform-style: preserve-3d; 
+transition: transform 0.5s; 
+} 
+
+.grid img.flip { 
+transform: rotateY(180deg); 
+} 
+
+.popup { 
+background: rgba(0, 0, 0, 0); 
+width: 200px; 
+height: 20px; 
+z-index:20;
+position: absolute; 
+top: 100px;
+left: 100px; 
+display: flex;
+justify-content: center; 
+align-items: center; 
+flex-direction: column;
+}
+
+.data { 
+display: flex; 
+justify-content: space-between; 
+padding: 20px 30px; 
+font-size: 23px; 
+} 
+
+.data span { 
+color: rgb(0, 0, 0);
+font-size: 30px; 
+}
+</style>
+<body>
+	<a href='kepek.html'>
+	<video autoplay muted loop id="background">
+        <source src="pislogas3.mp4" type="video/mp4">
+    </video>
+	</a>
+	<script>
+		let cardArray = [ 
+{ name: "fries", img: "iszikalkoholtezt.png", }, 
+{ name: "fries", img: "iszikalkoholtezt.png", },
+{ name: "pizza", img: "karbantartas2.png", },
+{ name: "pizza", img: "karbantartas2.png", }, 
+{ name: "milkshake", img: "babralasezt.png", },
+{ name: "milkshake", img: "babralasezt.png", }, 
+{ name: "namizu", img: "molyviadal2ezt.png", },
+{ name: "namizu", img: "molyviadal2ezt.png", }, 
+{ name: "nagyonfaradt", img: "nagymoly.png", },
+{ name: "nagyonfaradt", img: "nagymoly.png", }, 
+{ name: "huhu", img: "novenyekkozottezt.png", },
+{ name: "huhu", img: "novenyekkozottezt.png", }, 
+]; 
+
+let grid = document.querySelector(".grid"); 
+let scoreBoard = document.querySelector(".scoreBoard"); 
+let popup = document.querySelector(".popup"); 
+let playAgain = document.querySelector(".playAgain"); 
+let clickBoard = document.querySelector(".clickBoard"); 
+let imgs; 
+let cardsId = []; 
+let cardsSelected = []; 
+let cardsWon = 0; 
+let clicks = 0;
+
+document.addEventListener("DOMContentLoaded", function () {
+
+createBoard(grid, cardArray); 
+arrangeCard();
+playAgain.addEventListener("click", replay); 
+
+imgs = document.querySelectorAll("img");
+Array.from(imgs).forEach(img => 
+img.addEventListener("click", flipCard)
+) 
+});
+
+function createBoard(grid, array) { 
+popup.style.display = "none"; 
+array.forEach((arr, index) => { 
+let img = document.createElement("img"); 
+img.setAttribute("src", "molypink.jpg");
+img.setAttribute("data-id", index); 
+grid.appendChild(img); 
+})
+}
+
+function arrangeCard() { 
+cardArray.sort(() => 0.5 - Math.random())
+}
+
+function flipCard() { 
+let selected = this.dataset.id;
+cardsSelected.push(cardArray[selected].name); 
+cardsId.push(selected); 
+this.classList.add("flip"); 
+this.setAttribute("src", cardArray[selected].img); 
+if (cardsId.length === 2) { 
+setTimeout(checkForMatch, 500);
+} 
+}
+
+function checkForMatch() { 
+let imgs = document.querySelectorAll("img"); 
+let firstCard = cardsId[0];
+let secondCard = cardsId[1];
+if (cardsSelected[0] === cardsSelected[1] && firstCard !== secondCard) { 
+alert("találtál egy párt!"); 
+cardsWon += 1; 
+scoreBoard.innerHTML = cardsWon; 
+setTimeout(checkWon,500) 
+} else { 
+imgs[firstCard].setAttribute("src", "molypink.jpg");
+imgs[secondCard].setAttribute("src", "molypink.jpg"); alert("próbáld újra!"); imgs[firstCard].classList.remove("flip"); imgs[secondCard].classList.remove("flip"); 
+} 
+cardsSelected = []; 
+cardsId = []; 
+clicks += 1; 
+clickBoard.innerHTML = clicks; 
+}
+
+function checkWon() {
+if (cardsWon == cardArray.length / 2) {
+alert("Nyertél!") 
+setTimeout(()=> popup.style.display = "flex" ,300); 
+}
+}
+
+function replay() { 
+arrangeCard(); 
+grid.innerHTML = "";
+createBoard(grid, cardArray);
+cardsWon = 0;
+clicks = 0; 
+clickBoard.innerHTML = 0; 
+scoreBoard.innerHTML = 0; 
+popup.style.display = "none"; 
+}
+	</script>
+</body>
+
+</html>
+
